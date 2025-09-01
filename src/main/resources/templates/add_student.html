@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Student | EduTrack</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .form-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 20px; /* Increased padding for breathing room */
+        }
+        
+        .registration-card {
+            background: #ffffff;
+            padding: 3rem; /* More internal padding for a premium feel */
+            border-radius: 16px; /* Smoother corners */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08); /* Softer, larger shadow */
+            width: 100%;
+            max-width: 550px; /* Slightly wider for better text layout */
+            border-top: 6px solid #1a73e8;
+        }
+
+        .form-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .form-header h2 {
+            color: #1a73e8;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .form-header p {
+            color: #5f6368;
+            font-size: 0.9rem;
+        }
+
+        /* MODERN INPUT STYLING */
+        .input-group {
+            margin-bottom: 1.8rem; /* More space between groups */
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #3c4043;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 14px 18px; /* Larger hit area */
+            border: 1.5px solid #dadce0;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #202124;
+            background-color: #f8f9fa; /* Subtle background color */
+            transition: all 0.3s ease;
+            outline: none;
+            appearance: none; /* Removes default arrow for custom look */
+        }
+
+        /* Adding a custom dropdown arrow */
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper::after {
+            content: '▼';
+            font-size: 0.8rem;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            position: absolute;
+            color: #5f6368;
+            pointer-events: none;
+        }
+
+        /* Hover & Focus Effects */
+        .input-group input:hover, .input-group select:hover {
+            border-color: #bdc1c6;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: #1a73e8;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.1); /* Professional focus ring */
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(26, 115, 232, 0.2);
+        }
+
+        .login-btn:hover {
+            background: #1557b0;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(26, 115, 232, 0.3);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 25px;
+            text-decoration: none;
+            color: #5f6368;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .back-link:hover {
+            color: #1a73e8;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div style="font-size: 1.5rem; font-weight: bold; color: #1a73e8;">EduTrack</div>
+        <nav>
+            <ul class="nav-menu">
+                <li><a th:href="@{/admin/home}">Home</a></li>
+                <li><a th:href="@{/admin/dashboard}">Management</a></li>
+                <li><a th:href="@{/admin/courses}">Courses</a></li>
+                <li><a href="/">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="form-wrapper">
+        <div class="registration-card">
+            
+            <a th:href="@{/admin/dashboard}" class="back-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Back to Dashboard
+            </a>
+
+            <div class="form-header">
+                <h2>Register Student</h2>
+                <p>Ensure all fields are accurate before saving to the database.</p>
+            </div>
+
+            <div th:if="${error}" style="background: #fce8e6; color: #d93025; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #f1998e; font-size: 0.9rem; display: flex; align-items: center;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 10px;">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+                <span th:text="${error}">Error Message</span>
+            </div>
+            <form th:action="@{/admin/saveStudent}" th:object="${student}" method="POST">
+                
+                <div class="input-group">
+                    <label>Course / Department</label>
+                    <div class="select-wrapper">
+                        <select th:field="*{course}" id="courseSelect" required>
+                            <option value="" selected >Select a course</option>
+                            <option th:each="course : ${listCourses}" 
+                                    th:value="${course.courseCode}" 
+                                    th:text="${course.courseName + ' (' + course.courseCode + ')'}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Registration Number</label>
+                    <input type="text" th:field="*{regNo}" id="regNoInput" placeholder="e.g. 2026BCA101" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" th:field="*{name}" placeholder="Enter full name" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" th:field="*{email}" placeholder="example@college.com" required>
+                </div>
+
+                <div style="margin-top: 2.5rem;">
+                    <button type="submit" class="login-btn">Save Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const courseSelect = document.getElementById('courseSelect');
+        const regNoInput = document.getElementById('regNoInput');
+        const currentYear = new Date().getFullYear();
+
+        courseSelect.addEventListener('change', function() {
+            // UPDATED LOGIC: Instead of a hardcoded switch, we use the selected value directly.
+            // This works for BCA, MCA, B.Com, and ANY course you add in the future.
+            let selectedValue = this.value;
+            
+            // Clean up the code if it has spaces (like B.Sc CS -> BSC)
+            let cleanCode = selectedValue.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+            
+            if(cleanCode !== "") {
+                regNoInput.value = currentYear + cleanCode;
+                regNoInput.focus();
+            }
+        });
+    </script>
+
+</body>
+</html>

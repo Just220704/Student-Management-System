@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Home | EduTrack Pro</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .hub-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        .welcome-section {
+            margin-bottom: 40px;
+        }
+        .welcome-section h1 {
+            color: #202124;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .welcome-section p {
+            color: #5f6368;
+            font-size: 1.1rem;
+        }
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        /* Style for the dynamic count badge */
+        .stat-badge {
+            background: #e8f0fe;
+            color: #1a73e8;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div style="font-size: 1.5rem; font-weight: bold; color: #1a73e8;">EduTrack</div>
+        <nav>
+            <ul class="nav-menu">
+                <li class="active"><a th:href="@{/admin/home}">Home</a></li>
+                <li><a th:href="@{/admin/dashboard}">Management</a></li>
+                <li><a th:href="@{/admin/courses}">Courses</a></li>
+                <li><a th:href="@{/logout}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="hub-container">
+        <div class="welcome-section">
+            <h1>Welcome, <span th:text="${#authentication.name}" style="color: #1a73e8;">Admin</span></h1>
+            <p>Your personal administrative workspace is ready. Manage your specific records below.</p>
+        </div>
+
+        <div class="feature-grid">
+            
+            <a th:href="@{/admin/dashboard}" class="card-link">
+                <div class="feature-box">
+                    <h3 style="color: #1a73e8;">Student Management</h3>
+                    <h2 style="color: #202124;">
+                        <span th:text="${totalCount}">0</span> Records
+                    </h2> 
+                    <p>View, Add, Update, and Delete your registered student records.</p>
+                </div>
+            </a>
+            
+            <a th:href="@{/admin/courses}" class="card-link">
+                <div class="feature-box" style="border-left-color: #34a853;">
+                    <h3 style="color: #34a853;">Academic Courses</h3>
+                    <h2>My Curriculum</h2>
+                    <p>Manage the intake and details for your specific course branches.</p>
+                </div>
+            </a>
+
+            <a th:href="@{/admin/security/users}" class="card-link">
+                <div class="feature-box" style="border-left-color: #9333ea;">
+                    <h3 style="color: #9333ea;">Security Profile</h3>
+                    <h2>Isolated</h2>
+                    <p>Access your private administrative credentials and security status.</p>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+</body>
+</html>

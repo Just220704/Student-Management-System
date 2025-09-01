@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile | EduTrack Pro</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; }
+        
+        .main-header { 
+            background: #fff; 
+            padding: 0 40px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            height: 70px;
+            border-bottom: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .nav-container { display: flex; align-items: center; gap: 30px; }
+        .logo { font-size: 24px; font-weight: bold; color: #1a73e8; margin-right: 20px; }
+
+        .top-nav { list-style: none; display: flex; margin: 0; padding: 0; gap: 5px; }
+        .top-nav li a { 
+            text-decoration: none; 
+            color: #5f6368; 
+            padding: 10px 15px; 
+            border-radius: 6px; 
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        .top-nav li a:hover { background: #f1f3f4; color: #202124; }
+        .top-nav li.active a { color: #1a73e8; background: #e8f0fe; }
+
+        .content { padding: 40px; max-width: 900px; margin: auto; }
+        
+        .profile-card { 
+            background: #fff; 
+            padding: 35px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: #e8f0fe;
+            color: #1a73e8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .profile-details { flex-grow: 1; }
+        .detail-group { margin-bottom: 15px; border-bottom: 1px solid #f1f3f4; padding-bottom: 10px; }
+        .detail-label { color: #5f6368; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 5px; }
+        .detail-value { font-size: 1.1rem; color: #202124; font-weight: 500; }
+
+        .status-active { background: #e6f4ea; color: #1e8e3e; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+        .btn-danger-outline { 
+            color: #d93025; 
+            text-decoration: none; 
+            font-weight: bold; 
+            border: 1px solid #d93025; 
+            padding: 8px 18px; 
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+        .btn-danger-outline:hover { background: #fce8e6; }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="nav-container">
+            <div class="logo">EduTrack Pro</div>
+            <ul class="top-nav">
+                <li><a th:href="@{/admin/home}">Home</a></li>
+                <li><a th:href="@{/admin/dashboard}">Management</a></li>
+                <li><a th:href="@{/admin/courses}">Courses</a></li>
+                <li class="active"><a th:href="@{/admin/security/users}">System Security</a></li>
+            </ul>
+        </div>
+        
+        <div class="user-info" style="display: flex; align-items: center;">
+            <span style="margin-right: 20px; color: #202124; font-weight: 500;" th:text="${#authentication.name}">Admin</span>
+            <a th:href="@{/logout}" style="color: #d93025; text-decoration: none; font-weight: bold; border: 1.5px solid #d93025; padding: 6px 15px; border-radius: 6px;">Logout</a>
+        </div>
+    </header>
+
+    <main class="content">
+        <div style="margin-bottom: 30px;">
+            <h2 style="color: #202124; margin: 0; font-size: 1.8rem;">Security Profile</h2>
+            <p style="color: #5f6368; margin-top: 5px;">Your administrative access credentials and status.</p>
+        </div>
+
+        <div th:if="${success}" style="background: #e6f4ea; color: #1e8e3e; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #81c995;">
+            <span th:text="${success}"></span>
+        </div>
+
+        <div class="profile-card" th:each="u : ${listUsers}">
+            <div class="profile-avatar" th:text="${#strings.substring(u.username, 0, 1).toUpperCase()}">A</div>
+            
+            <div class="profile-details">
+                <div class="detail-group">
+                    <div class="detail-label">Username / Registered Email</div>
+                    <div class="detail-value" th:text="${u.username}">admin@edutrack.com</div>
+                </div>
+
+                <div class="detail-group">
+                    <div class="detail-label">Account Status</div>
+                    <div class="detail-value">
+                        <span class="status-active" th:text="${u.enabled ? 'Active' : 'Disabled'}">Active</span>
+                    </div>
+                </div>
+
+                <div class="detail-group">
+                    <div class="detail-label">Security Privileges</div>
+                    <div class="detail-value">
+                        <code style="background: #f1f3f4; padding: 3px 8px; border-radius: 4px; font-size: 0.9rem; color: #1a73e8;" th:text="${u.roles}">[ROLE_ADMIN]</code>
+                    </div>
+                </div>
+
+                <div style="margin-top: 25px;">
+                    <a th:href="@{/admin/security/delete/{id}(id=${u.id})}" 
+                       class="btn-danger-outline" 
+                       onclick="return confirm('CRITICAL WARNING: This will permanently delete your administrator account. Continue?')">Deactivate My Access</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

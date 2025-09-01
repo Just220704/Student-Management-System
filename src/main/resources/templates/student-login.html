@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal | EduTrack Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--dark);
+            background-image: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            padding: 50px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-header { text-align: center; margin-bottom: 35px; }
+        .login-header h2 { font-size: 2rem; margin: 0; font-weight: 800; color: #fff; }
+        .login-header p { color: #94a3b8; margin-top: 10px; font-size: 0.95rem; }
+        .login-header span { color: var(--primary); }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem; font-weight: 500; }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            box-sizing: border-box;
+            transition: 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        .btn-login:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+            background: #2563eb;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            border: 1px solid;
+        }
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+        .alert-logout {
+            background: rgba(34, 197, 94, 0.1);
+            color: #4ade80;
+            border-color: rgba(34, 197, 94, 0.2);
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+        .back-link a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="login-header">
+            <h2>Student <span>Portal</span></h2>
+            <p>Access your academic profile</p>
+        </div>
+
+        <div th:if="${param.error}" class="alert alert-error">
+            Invalid Email or Registration Number.
+        </div>
+
+        <div th:if="${param.logout}" class="alert alert-logout">
+            Successfully logged out.
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label>Institutional Email</label>
+                <input type="email" name="username" placeholder="student@example.com" required autofocus>
+            </div>
+            <div class="form-group">
+                <label>Password (Your Reg. No)</label>
+                <input type="password" name="password" placeholder="Enter Reg. Number" required>
+            </div>
+            <button type="submit" class="btn-login">Launch Dashboard</button>
+        </form>
+
+        <div class="back-link">
+            Need help? <a href="/#contact">Contact Support</a>
+        </div>
+    </div>
+
+</body>
+</html>

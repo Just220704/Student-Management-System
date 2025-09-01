@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard | Student Management</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        /* Keeping your custom sizing exactly as provided */
+        .container { padding: 20px; max-width: 1200px; margin: auto; }
+        
+        .table-wrapper {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        table { width: 100%; border-collapse: collapse; }
+        
+        th { 
+            background-color: #f8f9fa; 
+            color: #5f6368; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            font-size: 0.85rem; 
+            letter-spacing: 0.5px;
+            padding: 18px 15px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        td { padding: 15px; border-bottom: 1px solid #f1f1f1; color: #3c4043; }
+        tr:hover { background-color: #fcfdfe; }
+
+        .header-content { margin: 30px 0; display: flex; justify-content: space-between; align-items: center; }
+        
+        .btn-action {
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: 0.3s;
+            display: inline-block;
+        }
+        
+        .update-btn { color: #1a73e8; background: #e8f0fe; margin-right: 8px; }
+        .update-btn:hover { background: #1a73e8; color: white; }
+        
+        .delete-btn { color: #d93025; background: #fce8e6; }
+        .delete-btn:hover { background: #d93025; color: white; }
+
+        /* --- PROFESSIONAL NOTIFICATION TOASTS --- */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .toast-bar {
+            min-width: 300px;
+            padding: 16px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            margin-bottom: 10px;
+            animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .toast-success { background: #1e8e3e; border-left: 6px solid #137333; }
+        .toast-danger { background: #d93025; border-left: 6px solid #a50e0e; }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .feature-box p { color: #5f6368; font-size: 0.85rem; margin-top: 5px; }
+
+        .reg-no {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 700;
+            color: #1a73e8;
+        }
+
+        /* NEW: Smart Filter Search Box Styles */
+        .search-container {
+            margin-bottom: 20px;
+            position: relative;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1.5px solid #dadce0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s;
+            background-color: white;
+        }
+
+        .search-input:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #5f6368;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toast-container">
+        <div th:if="${param.success}" class="toast-bar toast-success">
+            <span>✅ Student record saved successfully!</span>
+        </div>
+
+        <div th:if="${param.deleted}" class="toast-bar toast-danger">
+            <span>🗑️ Student record removed.</span>
+        </div>
+    </div>
+
+    <header class="main-header">
+        <div style="font-size: 1.5rem; font-weight: bold; color: #1a73e8;">EduTrack</div>
+        <nav>
+            <ul class="nav-menu">
+                <ul class="nav-menu">
+                <li><a th:href="@{/admin/home}">Home</a></li>
+                
+                <li><a th:href="@{/admin/dashboard}">Management</a></li>
+                
+                <li><a th:href="@{/admin/courses}">Courses</a></li>
+                
+                <li><a th:href="@{/}">Logout</a></li>
+            </ul>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="feature-grid">
+            <div class="feature-box">
+                <h3 style="color: #1a73e8;">Total Students</h3>
+                <h2 th:text="${listStudents.size()}">0</h2>
+                <p>Registered in system</p>
+            </div>
+            
+            <div class="feature-box" style="border-left-color: #34a853;">
+                <h3 style="color: #34a853;">Current Session</h3>
+                <h2>2026-27</h2>
+                <p>Active Academic Year</p>
+            </div>
+            
+            <div class="feature-box" style="border-left-color: #fbbc04;">
+                <h3 style="color: #fbbc04;">Departments</h3>
+                <h2>04</h2>
+                <p>BCA, MCA, CS, B.sc, M.sc, B.tech, M.tech</p>
+            </div>
+
+            <div class="feature-box" style="border-left-color: #9333ea;">
+                <h3 style="color: #9333ea;">Security</h3>
+                <h2>Verified</h2>
+                <p>System Logs: Clear</p>
+            </div>
+        </div>
+
+        <div class="header-content">
+            <div>
+                <h1 style="color: #202124;">Student Registry</h1>
+                <p style="color: #5f6368;">Manage all enrolled students from this central panel.</p>
+            </div>
+            <a th:href="@{/admin/showNewStudentForm}" class="login-btn" style="text-decoration:none; width: auto; padding: 0.8rem 1.5rem; border-radius: 8px;">+ Add New Student</a>
+        </div>
+
+        <div class="search-container">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="smartSearch" class="search-input" placeholder="Search by name, reg no, or course...">
+        </div>
+
+        <div class="table-wrapper">
+            <table id="studentTable">
+                <thead>
+                    <tr>
+                        <th>Reg No</th>
+                        <th>Student Name</th>
+                        <th>Email Address</th>
+                        <th>Enrolled Course</th>
+                        <th style="text-align: center;">Management Actions</th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="student : ${listStudents}">
+                        <td class="reg-no" th:text="${student.regNo}"></td>
+                        <td class="student-name" th:text="${student.name}" style="font-weight: 500;"></td>
+                        <td th:text="${student.email}"></td>
+                        <td class="course-cell">
+                            <span style="background: #f1f3f4; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;" th:text="${student.course}"></span>
+                        </td>
+                        <td style="text-align: center;">
+                            <a class="btn-action update-btn" th:href="@{/admin/showFormForUpdate/{id}(id=${student.id})}">Edit Details</a>
+                            <a class="btn-action delete-btn" th:href="@{/admin/deleteStudent/{id}(id=${student.id})}" 
+                               onclick="return confirm('Delete this record?')">Remove</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // 1. Auto-hide notifications
+        setTimeout(() => {
+            const toasts = document.querySelectorAll('.toast-bar');
+            toasts.forEach(t => t.style.display = 'none');
+        }, 4000);
+
+        // 2. SMART FILTER LOGIC
+        document.getElementById('smartSearch').addEventListener('keyup', function() {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#studentTable tbody tr');
+
+            rows.forEach(row => {
+                // Get text from Reg No, Name, and Course columns
+                const regNo = row.querySelector('.reg-no').textContent.toLowerCase();
+                const name = row.querySelector('.student-name').textContent.toLowerCase();
+                const course = row.querySelector('.course-cell').textContent.toLowerCase();
+
+                if (regNo.includes(filter) || name.includes(filter) || course.includes(filter)) {
+                    row.style.display = ""; // Show row
+                } else {
+                    row.style.display = "none"; // Hide row
+                }
+            });
+        });
+    </script>
+</body>
+</html>

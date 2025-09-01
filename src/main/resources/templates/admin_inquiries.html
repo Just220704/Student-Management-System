@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Inquiry Management | EduTrack Pro</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .container { max-width: 1200px; margin: 50px auto; padding: 0 20px; }
+        .table-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-top: 5px solid #fbbc04; /* Matches the Home card color */
+        }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; color: #5f6368; padding: 15px; border-bottom: 2px solid #f1f3f4; }
+        td { padding: 15px; border-bottom: 1px solid #f1f3f4; vertical-align: top; }
+        .btn-resolve {
+            background: #34a853;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-resolve:hover { background: #2d8e47; opacity: 0.9; }
+        .timestamp { color: #9aa0a6; font-size: 0.8rem; }
+        .subject-badge {
+            background: #e8f0fe;
+            color: #1a73e8;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div style="font-size: 1.5rem; font-weight: bold; color: #1a73e8;">EduTrack</div>
+        <nav>
+            <ul class="nav-menu">
+                <li><a th:href="@{/admin/home}">Home</a></li>
+                <li><a th:href="@{/admin/dashboard}">Management</a></li>
+                <li><a th:href="@{/admin/courses}">Courses</a></li>
+                <li><a href="/">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <div>
+                <h1 style="margin: 0; color: #202124;">Student Support Inquiries</h1>
+                <p style="color: #5f6368; margin-top: 5px;">Manage and resolve requests from the student help desk.</p>
+            </div>
+            <a th:href="@{/admin/home}" style="text-decoration: none; color: #1a73e8; font-weight: bold;">&larr; Back to Hub</a>
+        </div>
+
+        <div class="table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Received At</th>
+                        <th>Student Details</th>
+                        <th>Subject</th>
+                        <th>Message</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="inquiry : ${listInquiries}">
+                        <td class="timestamp" th:text="${#temporals.format(inquiry.sentAt, 'dd MMM, yyyy HH:mm')}">Date</td>
+                        <td>
+                            <div style="font-weight: bold; color: #202124;" th:text="${inquiry.studentName}">Name</div>
+                            <div style="font-size: 0.85rem; color: #5f6368;" th:text="${inquiry.studentEmail}">Email</div>
+                        </td>
+                        <td><span class="subject-badge" th:text="${inquiry.subject}">Subject</span></td>
+                        <td style="max-width: 350px; line-height: 1.5; color: #3c4043;" th:text="${inquiry.message}">Message content...</td>
+                        <td>
+                            <a th:href="@{/admin/deleteInquiry/{id}(id=${inquiry.id})}" 
+                               class="btn-resolve" 
+                               onclick="return confirm('Mark this inquiry as resolved and remove from list?')">
+                               Resolve
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div th:if="${#lists.isEmpty(listInquiries)}" style="text-align: center; padding: 60px 0;">
+                <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" style="width: 80px; opacity: 0.2; margin-bottom: 20px;">
+                <p style="color: #9aa0a6; font-size: 1.1rem;">No pending inquiries. All caught up!</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

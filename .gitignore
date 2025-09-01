@@ -1,0 +1,9 @@
+/target/
+.mvn/
+.idea/
+*.class
+*.log
+.classpath
+.project
+.settings/
+HELP.md
